@@ -1,0 +1,10 @@
+.measure-figure .region {
+  stroke: #9ca3af;
+  stroke-width: 2;
+  fill: none;
+}
+
+.measure-figure .highlight {
+  stroke: #6b9080;
+  fill: rgba(107, 144, 128, 0.2);
+}
