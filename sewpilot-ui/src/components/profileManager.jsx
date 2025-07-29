@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './profileManager.css';
 
 const initialState = {
   name: '',
@@ -12,7 +13,8 @@ const initialState = {
   armLength: '',
   bicepCircumference: '',
   legLength: '',
-  thighCircumference: ''
+  thighCircumference: '',
+  inseam: ''
 };
 
 const presets = {
@@ -23,7 +25,8 @@ const presets = {
     armLength: 24,
     bicepCircumference: 12,
     legLength: 30,
-    thighCircumference: 18
+    thighCircumference: 18,
+    inseam: 29
   },
   M: {
     chest: 38,
@@ -32,7 +35,8 @@ const presets = {
     armLength: 25,
     bicepCircumference: 13,
     legLength: 32,
-    thighCircumference: 20
+    thighCircumference: 20,
+    inseam: 31
   },
   L: {
     chest: 42,
@@ -41,7 +45,8 @@ const presets = {
     armLength: 26,
     bicepCircumference: 14,
     legLength: 34,
-    thighCircumference: 22
+    thighCircumference: 22,
+    inseam: 33
   }
 };
 
@@ -56,6 +61,7 @@ const ProfileManager = () => {
   });
   const [profiles, setProfiles] = useState([]);
   const [activeProfile, setActiveProfile] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('profiles');
@@ -84,7 +90,8 @@ const ProfileManager = () => {
       'armLength',
       'bicepCircumference',
       'legLength',
-      'thighCircumference'
+      'thighCircumference',
+      'inseam'
     ];
     numericFields.forEach((field) => {
       const value = parseFloat(form[field]);
@@ -128,6 +135,9 @@ const ProfileManager = () => {
     setExpanded((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
+  const handleFieldFocus = (field) => () => setFocusedField(field);
+  const clearFocus = () => setFocusedField(null);
+
   return (
     <div className="p-4 space-y-4">
       <div className="flex space-x-2">
@@ -141,7 +151,86 @@ const ProfileManager = () => {
           </button>
         ))}
       </div>
-      {/* Metadata Section */}
+      <div className="flex flex-col md:flex-row md:space-x-4">
+        <div className="md:w-1/3 flex justify-center mb-4 md:mb-0">
+          <svg
+            viewBox="0 0 100 200"
+            className="w-40 measure-figure"
+          >
+            <g id="body-outline" className="region">
+              <rect x="45" y="10" width="10" height="10" />
+              <rect x="30" y="20" width="40" height="70" />
+              <rect x="20" y="20" width="10" height="60" />
+              <rect x="70" y="20" width="10" height="60" />
+              <rect x="35" y="90" width="12" height="70" />
+              <rect x="53" y="90" width="12" height="70" />
+            </g>
+            <line
+              id="chest_circ"
+              x1="20"
+              y1="45"
+              x2="80"
+              y2="45"
+              className={`region ${focusedField === 'chest' ? 'highlight' : ''}`}
+            />
+            <line
+              id="waist_circ"
+              x1="20"
+              y1="65"
+              x2="80"
+              y2="65"
+              className={`region ${focusedField === 'waist' ? 'highlight' : ''}`}
+            />
+            <line
+              id="hip_circ"
+              x1="20"
+              y1="85"
+              x2="80"
+              y2="85"
+              className={`region ${focusedField === 'hip' ? 'highlight' : ''}`}
+            />
+            <line
+              id="arm_len"
+              x1="15"
+              y1="20"
+              x2="15"
+              y2="80"
+              className={`region ${focusedField === 'armLength' ? 'highlight' : ''}`}
+            />
+            <circle
+              id="bicep_circ"
+              cx="15"
+              cy="50"
+              r="6"
+              className={`region ${focusedField === 'bicepCircumference' ? 'highlight' : ''}`}
+            />
+            <line
+              id="leg_len"
+              x1="41"
+              y1="90"
+              x2="41"
+              y2="160"
+              className={`region ${focusedField === 'legLength' ? 'highlight' : ''}`}
+            />
+            <circle
+              id="thigh_circ"
+              cx="41"
+              cy="105"
+              r="6"
+              className={`region ${focusedField === 'thighCircumference' ? 'highlight' : ''}`}
+            />
+            <line
+              id="inseam_len"
+              x1="59"
+              y1="90"
+              x2="59"
+              y2="160"
+              className={`region ${focusedField === 'inseam' ? 'highlight' : ''}`}
+            />
+          </svg>
+        </div>
+        <div className="flex-1 space-y-4">
+          {/* Metadata Section */}
       <div className="border rounded-md">
         <div
           className="bg-gray-200 px-4 py-2 cursor-pointer"
@@ -230,6 +319,10 @@ const ProfileManager = () => {
                 name="chest"
                 value={form.chest}
                 onChange={handleChange}
+                onFocus={handleFieldFocus('chest')}
+                onBlur={clearFocus}
+                onMouseEnter={handleFieldFocus('chest')}
+                onMouseLeave={clearFocus}
                 className="w-full border p-2 rounded"
               />
               {errors.chest && <p className="text-red-500 text-xs">{errors.chest}</p>}
@@ -241,6 +334,10 @@ const ProfileManager = () => {
                 name="waist"
                 value={form.waist}
                 onChange={handleChange}
+                onFocus={handleFieldFocus('waist')}
+                onBlur={clearFocus}
+                onMouseEnter={handleFieldFocus('waist')}
+                onMouseLeave={clearFocus}
                 className="w-full border p-2 rounded"
               />
               {errors.waist && <p className="text-red-500 text-xs">{errors.waist}</p>}
@@ -252,6 +349,10 @@ const ProfileManager = () => {
                 name="hip"
                 value={form.hip}
                 onChange={handleChange}
+                onFocus={handleFieldFocus('hip')}
+                onBlur={clearFocus}
+                onMouseEnter={handleFieldFocus('hip')}
+                onMouseLeave={clearFocus}
                 className="w-full border p-2 rounded"
               />
               {errors.hip && <p className="text-red-500 text-xs">{errors.hip}</p>}
@@ -277,6 +378,10 @@ const ProfileManager = () => {
                 name="armLength"
                 value={form.armLength}
                 onChange={handleChange}
+                onFocus={handleFieldFocus('armLength')}
+                onBlur={clearFocus}
+                onMouseEnter={handleFieldFocus('armLength')}
+                onMouseLeave={clearFocus}
                 className="w-full border p-2 rounded"
               />
               {errors.armLength && <p className="text-red-500 text-xs">{errors.armLength}</p>}
@@ -288,6 +393,10 @@ const ProfileManager = () => {
                 name="bicepCircumference"
                 value={form.bicepCircumference}
                 onChange={handleChange}
+                onFocus={handleFieldFocus('bicepCircumference')}
+                onBlur={clearFocus}
+                onMouseEnter={handleFieldFocus('bicepCircumference')}
+                onMouseLeave={clearFocus}
                 className="w-full border p-2 rounded"
               />
               {errors.bicepCircumference && (
@@ -315,25 +424,50 @@ const ProfileManager = () => {
                 name="legLength"
                 value={form.legLength}
                 onChange={handleChange}
+                onFocus={handleFieldFocus('legLength')}
+                onBlur={clearFocus}
+                onMouseEnter={handleFieldFocus('legLength')}
+                onMouseLeave={clearFocus}
                 className="w-full border p-2 rounded"
               />
               {errors.legLength && <p className="text-red-500 text-xs">{errors.legLength}</p>}
             </div>
-            <div>
-              <label className="block text-sm">Thigh Circumference (in)</label>
-              <input
-                type="number"
-                name="thighCircumference"
-                value={form.thighCircumference}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
-              {errors.thighCircumference && (
-                <p className="text-red-500 text-xs">{errors.thighCircumference}</p>
-              )}
-            </div>
+          <div>
+            <label className="block text-sm">Thigh Circumference (in)</label>
+            <input
+              type="number"
+              name="thighCircumference"
+              value={form.thighCircumference}
+              onChange={handleChange}
+              onFocus={handleFieldFocus('thighCircumference')}
+              onBlur={clearFocus}
+              onMouseEnter={handleFieldFocus('thighCircumference')}
+              onMouseLeave={clearFocus}
+              className="w-full border p-2 rounded"
+            />
+            {errors.thighCircumference && (
+              <p className="text-red-500 text-xs">{errors.thighCircumference}</p>
+            )}
           </div>
-        )}
+          <div>
+            <label className="block text-sm">Inseam Length (in)</label>
+            <input
+              type="number"
+              name="inseam"
+              value={form.inseam}
+              onChange={handleChange}
+              onFocus={handleFieldFocus('inseam')}
+              onBlur={clearFocus}
+              onMouseEnter={handleFieldFocus('inseam')}
+              onMouseLeave={clearFocus}
+              className="w-full border p-2 rounded"
+            />
+            {errors.inseam && (
+              <p className="text-red-500 text-xs">{errors.inseam}</p>
+            )}
+          </div>
+        </div>
+      )}
       </div>
 
       <button
@@ -376,6 +510,7 @@ const ProfileManager = () => {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 };
